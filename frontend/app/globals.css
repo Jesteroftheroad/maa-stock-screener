@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --card2: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --green: #16a34a;
+    --red: #dc2626;
+  }
+
+  .dark {
+    --bg: #0a0a0f;
+    --card: #12121e;
+    --card2: #1a1a2e;
+    --border: #2a2a4a;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #00ff88;
+    --red: #ff4466;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-xl;
+  }
+
+  .glass-card-light {
+    @apply bg-white/90 border border-gray-200 rounded-xl shadow-sm;
+  }
+
+  .card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    @apply rounded-xl;
+  }
+
+  .card2 {
+    background-color: var(--card2);
+    border: 1px solid var(--border);
+    @apply rounded-xl;
+  }
+
+  .text-positive { color: var(--green); }
+  .text-negative { color: var(--red); }
+  .text-muted-var { color: var(--muted); }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg font-medium text-sm transition-all duration-150;
+    background: linear-gradient(135deg, #4488ff, #00ccff);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    @apply opacity-90 scale-[1.02];
+  }
+
+  .ticker-font {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .number-font {
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: "tnum";
+  }
+
+  .gradient-border {
+    position: relative;
+    border-radius: 12px;
+    background: var(--card);
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(68,136,255,0.4), rgba(0,255,136,0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 2px;
+  }
+}
