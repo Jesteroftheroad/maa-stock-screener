@@ -2,6 +2,7 @@ import type {
   MarketOverview, FearGreed, MoversData,
   ScreenerResult, FilterState, StockDetail,
   ChartDataPoint, WatchlistItem, DeepDiveResult,
+  SmartMoneyOverview, SmartMoneyScreenerResult, SmartMoneyResult, SmartMoneyFilters,
 } from "@/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -80,4 +81,28 @@ export async function fetchDeepDive(ticker: string): Promise<DeepDiveResult | nu
 
 export async function fetchDeepDiveCompare(tickers: string[]): Promise<{ results: DeepDiveResult[] } | null> {
   return apiFetch<{ results: DeepDiveResult[] }>(`/api/deep-dive/compare?tickers=${tickers.join(",")}`);
+}
+
+export async function fetchSmartMoneyOverview(): Promise<SmartMoneyOverview | null> {
+  return apiFetch<SmartMoneyOverview>("/api/smart-money/overview");
+}
+
+export async function fetchSmartMoneyScreen(filters: SmartMoneyFilters): Promise<SmartMoneyScreenerResult | null> {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(filters)) {
+    if (v !== undefined && v !== null && v !== "") params.set(k, String(v));
+  }
+  return apiFetch<SmartMoneyScreenerResult>(`/api/smart-money/screen?${params.toString()}`);
+}
+
+export async function fetchSmartMoneyPreset(name: string): Promise<SmartMoneyScreenerResult | null> {
+  return apiFetch<SmartMoneyScreenerResult>(`/api/smart-money/presets/${name}`);
+}
+
+export async function fetchSmartMoneyStock(ticker: string): Promise<SmartMoneyResult | null> {
+  return apiFetch<SmartMoneyResult>(`/api/smart-money/stock/${ticker.toUpperCase()}`);
+}
+
+export async function fetchSmartMoneyPresets(): Promise<{ presets: import("@/types").SmartMoneyPreset[] } | null> {
+  return apiFetch(`/api/smart-money/presets`);
 }

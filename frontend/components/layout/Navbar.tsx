@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart2, Search, Bookmark, Activity, Terminal } from "lucide-react";
+import { BarChart2, Search, Bookmark, Activity, Terminal, Eye } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/",          label: "Dashboard",  icon: Activity },
-  { href: "/screener",  label: "Screener",   icon: Search },
-  { href: "/deep-dive", label: "Deep Dive",  icon: Terminal },
-  { href: "/watchlist", label: "Watchlist",  icon: Bookmark },
+  { href: "/",            label: "Dashboard",   icon: Activity },
+  { href: "/screener",    label: "Screener",    icon: Search },
+  { href: "/smart-money", label: "Smart Money", icon: Eye },
+  { href: "/deep-dive",   label: "Deep Dive",   icon: Terminal },
+  { href: "/watchlist",   label: "Watchlist",   icon: Bookmark },
 ];
 
 export function Navbar() {

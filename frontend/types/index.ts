@@ -287,6 +287,78 @@ export interface DeepDiveResult {
   ai_score: AIScoreData;
 }
 
+// ─── Smart Money Screener ──────────────────────────────────────────────────────
+
+export interface SmartMoneyResult {
+  ticker: string;
+  name: string;
+  price: number | null;
+  change_pct: number | null;
+  sector: string;
+  market_cap: number | null;
+  smart_money_score: number;
+  score_label: string;
+  score_color: string;
+  signal_type: string;
+  confidence: number;
+  action_tag: string;
+  inst_score: number;
+  options_score: number;
+  volume_score: number;
+  insider_score: number;
+  trend_score: number;
+  volume_vs_avg: number;
+  call_put_ratio: number | null;
+  institutional_trend: string;
+  inst_ownership_pct: number | null;
+  num_inst_holders: number | null;
+  insider_buys_90d: number;
+  insider_sells_90d: number;
+  short_interest_pct: number | null;
+  rsi: number | null;
+  above_sma50: boolean | null;
+  above_sma200: boolean | null;
+  ai_explanation: string;
+}
+
+export interface SmartMoneyOverview {
+  bullish_flow_count: number;
+  insider_buy_count: number;
+  unusual_volume_count: number;
+  high_conviction_count: number;
+  distribution_count: number;
+  total_scanned: number;
+}
+
+export interface SmartMoneyScreenerResult {
+  results: SmartMoneyResult[];
+  total: number;
+  scanned: number;
+  cached: boolean;
+  preset?: string;
+  preset_label?: string;
+}
+
+export interface SmartMoneyFilters {
+  score_min?: number;
+  cp_ratio_min?: number;
+  vol_surge_min?: number;
+  insider_buys_min?: number;
+  inst_ownership_min?: number;
+  above_sma50?: boolean;
+  rsi_max?: number;
+  short_interest_min?: number;
+  sector?: string;
+  signal_type?: string;
+}
+
+export interface SmartMoneyPreset {
+  name: string;
+  label: string;
+  icon: string;
+  description: string;
+}
+
 export interface MoverItem {
   ticker: string;
   price: number | null;

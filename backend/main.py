@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.watchlist import init_db
-from routers import market, screener, stock, watchlist, deep_dive
+from routers import market, screener, stock, watchlist, deep_dive, smart_money
 
 logging.basicConfig(
     level=logging.INFO,
@@ -47,7 +47,8 @@ app.include_router(market.router,    prefix="/api/market",    tags=["market"])
 app.include_router(screener.router,  prefix="/api",           tags=["screener"])
 app.include_router(stock.router,     prefix="/api/stock",     tags=["stock"])
 app.include_router(watchlist.router,  prefix="/api/watchlist",  tags=["watchlist"])
-app.include_router(deep_dive.router,  prefix="/api/deep-dive",  tags=["deep-dive"])
+app.include_router(deep_dive.router,    prefix="/api/deep-dive",    tags=["deep-dive"])
+app.include_router(smart_money.router,  prefix="/api/smart-money",  tags=["smart-money"])
 
 
 @app.get("/api/health")
