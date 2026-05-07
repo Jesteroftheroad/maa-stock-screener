@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Loader2, Terminal, Zap, TrendingUp, BarChart2, X } from "lucide-react";
+import { Search, Loader2, Terminal, Zap, TrendingUp, BarChart2, X, ChevronRight } from "lucide-react";
 import { fetchDeepDive, fetchSearch } from "@/lib/api";
 import type { SearchResult } from "@/types";
 
