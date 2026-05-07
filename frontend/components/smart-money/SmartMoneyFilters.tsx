@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { SlidersHorizontal, RotateCcw } from "lucide-react";
 import type { SmartMoneyFilters as Filters } from "@/types";
 
@@ -22,19 +24,46 @@ const SIGNAL_TYPES = [
 export function SmartMoneyFilters({ filters, onChange, onReset }: Props) {
   const [local, setLocal] = useState<Filters>(filters);
 
-  function update(key: keyof Filters, value: string | number | boolean | undefined) {
-    const next = { ...local, [key]: value === "" ? undefined : value };
-    setLocal(next);
+  // Sync when parent resets (filters becomes {})
+  useEffect(() => {
+    setLocal(filters);
+  }, [filters]);
+
+  function set(key: keyof Filters, raw: string) {
+    setLocal(prev => {
+      if (raw === "" || raw === undefined) {
+        const next = { ...prev };
+        delete (next as Record<string, unknown>)[key];
+        return next;
+      }
+      return { ...prev, [key]: raw };
+    });
+  }
+
+  function setNum(key: keyof Filters, raw: string) {
+    setLocal(prev => {
+      if (raw === "") {
+        const next = { ...prev };
+        delete (next as Record<string, unknown>)[key];
+        return next;
+      }
+      return { ...prev, [key]: Number(raw) };
+    });
+  }
+
+  function setBool(key: keyof Filters, raw: string) {
+    setLocal(prev => {
+      if (raw === "") {
+        const next = { ...prev };
+        delete (next as Record<string, unknown>)[key];
+        return next;
+      }
+      return { ...prev, [key]: raw === "true" };
+    });
   }
 
   function apply() {
-    const clean: Filters = {};
-    for (const [k, v] of Object.entries(local)) {
-      if (v !== undefined && v !== "" && v !== null) {
-        (clean as Record<string, unknown>)[k] = v;
-      }
-    }
-    onChange(clean);
+    onChange({ ...local });
   }
 
   function reset() {
@@ -42,117 +71,105 @@ export function SmartMoneyFilters({ filters, onChange, onReset }: Props) {
     onReset();
   }
 
-  const inputCls = "w-full rounded-lg px-3 py-1.5 text-sm border outline-none focus:border-emerald-500/60 transition-colors";
+  const inputCls =
+    "w-full rounded-lg px-3 py-1.5 text-sm border outline-none focus:border-emerald-500/60 transition-colors";
   const inputStyle = {
     background: "var(--bg)",
     borderColor: "var(--border)",
     color: "var(--text)",
-  };
-
+  } as React.CSSProperties;
   const labelCls = "block text-xs font-medium mb-1";
-  const labelStyle = { color: "var(--muted)" };
+  const labelStyle = { color: "var(--muted)" } as React.CSSProperties;
 
   return (
-    <div className="rounded-xl border p-4" style={{ background: "var(--card)", borderColor: "var(--border)" }}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <SlidersHorizontal size={15} className="text-emerald-400" />
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>Advanced Filters</span>
-        </div>
+    <div
+      className="rounded-xl border p-4"
+      style={{ background: "var(--card)", borderColor: "var(--border)" }}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <SlidersHorizontal size={15} className="text-emerald-400" />
+        <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
+          Advanced Filters
+        </span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 
-        {/* Score */}
         <div>
-          <label className={labelCls} style={labelStyle}>Min Smart Money Score</label>
+          <label className={labelCls} style={labelStyle}>Min SM Score</label>
           <input
-            type="number" min={0} max={100}
-            placeholder="e.g. 65"
-            value={local.score_min ?? ""}
-            onChange={e => update("score_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} max={100} placeholder="e.g. 65"
+            value={(local.score_min as number | undefined) ?? ""}
+            onChange={e => setNum("score_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* C/P Ratio */}
         <div>
           <label className={labelCls} style={labelStyle}>Min Call/Put Ratio</label>
           <input
-            type="number" min={0} step={0.1}
-            placeholder="e.g. 2.0"
-            value={local.cp_ratio_min ?? ""}
-            onChange={e => update("cp_ratio_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} step={0.1} placeholder="e.g. 2.0"
+            value={(local.cp_ratio_min as number | undefined) ?? ""}
+            onChange={e => setNum("cp_ratio_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* Volume surge */}
         <div>
           <label className={labelCls} style={labelStyle}>Min Volume vs Avg</label>
           <input
-            type="number" min={0} step={0.1}
-            placeholder="e.g. 1.5"
-            value={local.vol_surge_min ?? ""}
-            onChange={e => update("vol_surge_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} step={0.1} placeholder="e.g. 1.5"
+            value={(local.vol_surge_min as number | undefined) ?? ""}
+            onChange={e => setNum("vol_surge_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* Insider buys */}
         <div>
           <label className={labelCls} style={labelStyle}>Min Insider Buys (90d)</label>
           <input
-            type="number" min={0}
-            placeholder="e.g. 1"
-            value={local.insider_buys_min ?? ""}
-            onChange={e => update("insider_buys_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} placeholder="e.g. 1"
+            value={(local.insider_buys_min as number | undefined) ?? ""}
+            onChange={e => setNum("insider_buys_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* Institutional ownership */}
         <div>
           <label className={labelCls} style={labelStyle}>Min Inst. Ownership</label>
           <input
-            type="number" min={0} max={1} step={0.05}
-            placeholder="e.g. 0.5 = 50%"
-            value={local.inst_ownership_min ?? ""}
-            onChange={e => update("inst_ownership_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} max={1} step={0.05} placeholder="0.5 = 50%"
+            value={(local.inst_ownership_min as number | undefined) ?? ""}
+            onChange={e => setNum("inst_ownership_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* RSI max */}
         <div>
           <label className={labelCls} style={labelStyle}>Max RSI (oversold)</label>
           <input
-            type="number" min={0} max={100}
-            placeholder="e.g. 40"
-            value={local.rsi_max ?? ""}
-            onChange={e => update("rsi_max", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} max={100} placeholder="e.g. 40"
+            value={(local.rsi_max as number | undefined) ?? ""}
+            onChange={e => setNum("rsi_max", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* Short interest */}
         <div>
           <label className={labelCls} style={labelStyle}>Min Short Interest</label>
           <input
-            type="number" min={0} max={1} step={0.01}
-            placeholder="e.g. 0.10 = 10%"
-            value={local.short_interest_min ?? ""}
-            onChange={e => update("short_interest_min", e.target.value ? Number(e.target.value) : undefined)}
+            type="number" min={0} max={1} step={0.01} placeholder="0.10 = 10%"
+            value={(local.short_interest_min as number | undefined) ?? ""}
+            onChange={e => setNum("short_interest_min", e.target.value)}
             className={inputCls} style={inputStyle}
           />
         </div>
 
-        {/* Sector */}
         <div>
           <label className={labelCls} style={labelStyle}>Sector</label>
           <select
-            value={local.sector ?? ""}
-            onChange={e => update("sector", e.target.value || undefined)}
+            value={(local.sector as string | undefined) ?? ""}
+            onChange={e => set("sector", e.target.value)}
             className={inputCls} style={inputStyle}
           >
             <option value="">All Sectors</option>
@@ -160,12 +177,11 @@ export function SmartMoneyFilters({ filters, onChange, onReset }: Props) {
           </select>
         </div>
 
-        {/* Signal type */}
         <div>
           <label className={labelCls} style={labelStyle}>Signal Type</label>
           <select
-            value={local.signal_type ?? ""}
-            onChange={e => update("signal_type", e.target.value || undefined)}
+            value={(local.signal_type as string | undefined) ?? ""}
+            onChange={e => set("signal_type", e.target.value)}
             className={inputCls} style={inputStyle}
           >
             <option value="">All Signals</option>
@@ -173,12 +189,15 @@ export function SmartMoneyFilters({ filters, onChange, onReset }: Props) {
           </select>
         </div>
 
-        {/* Above SMA50 */}
         <div>
           <label className={labelCls} style={labelStyle}>Price vs SMA50</label>
           <select
-            value={local.above_sma50 === true ? "true" : local.above_sma50 === false ? "false" : ""}
-            onChange={e => update("above_sma50", e.target.value === "" ? undefined : e.target.value === "true")}
+            value={
+              local.above_sma50 === true ? "true"
+              : local.above_sma50 === false ? "false"
+              : ""
+            }
+            onChange={e => setBool("above_sma50", e.target.value)}
             className={inputCls} style={inputStyle}
           >
             <option value="">Any</option>
