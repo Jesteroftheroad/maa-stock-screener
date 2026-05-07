@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart2, Search, Bookmark, Activity, Terminal, Eye } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { GlobalSearch } from "./GlobalSearch";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -54,6 +55,7 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          <GlobalSearch />
           <ThemeToggle />
         </div>
       </div>

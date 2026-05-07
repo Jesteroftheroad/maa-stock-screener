@@ -3,6 +3,7 @@ import type {
   ScreenerResult, FilterState, StockDetail,
   ChartDataPoint, WatchlistItem, DeepDiveResult,
   SmartMoneyOverview, SmartMoneyScreenerResult, SmartMoneyResult, SmartMoneyFilters,
+  SearchResponse,
 } from "@/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -105,4 +106,9 @@ export async function fetchSmartMoneyStock(ticker: string): Promise<SmartMoneyRe
 
 export async function fetchSmartMoneyPresets(): Promise<{ presets: import("@/types").SmartMoneyPreset[] } | null> {
   return apiFetch(`/api/smart-money/presets`);
+}
+
+export async function fetchSearch(query: string): Promise<SearchResponse | null> {
+  if (!query.trim()) return null;
+  return apiFetch<SearchResponse>(`/api/market/search?q=${encodeURIComponent(query.trim())}`);
 }

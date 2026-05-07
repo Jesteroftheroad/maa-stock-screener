@@ -68,8 +68,9 @@ SCREENER_MAX_WORKERS = 8
 SCREENER_CACHE_TTL = 900  # 15 minutes
 
 # --- Universe ---
-UNIVERSE_US_PATH = "data_files/universe_us.json"
-UNIVERSE_CA_PATH = "data_files/universe_ca.json"
+UNIVERSE_US_PATH  = "data_files/universe_us.json"
+UNIVERSE_CA_PATH  = "data_files/universe_ca.json"
+UNIVERSE_ETF_PATH = "data_files/universe_etf.json"
 
 # --- Watchlist ---
 WATCHLIST_DB_PATH = "data_files/watchlist.db"

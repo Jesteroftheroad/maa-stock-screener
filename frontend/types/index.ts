@@ -287,6 +287,23 @@ export interface DeepDiveResult {
   ai_score: AIScoreData;
 }
 
+// ─── Search ───────────────────────────────────────────────────────────────────
+
+export interface SearchResult {
+  ticker: string;
+  name: string;
+  sector: string;
+  exchange: string;
+  country: string;
+  type: "Stock" | "ETF";
+}
+
+export interface SearchResponse {
+  results: SearchResult[];
+  query: string;
+  total: number;
+}
+
 // ─── Smart Money Screener ──────────────────────────────────────────────────────
 
 export interface SmartMoneyResult {

@@ -1,8 +1,9 @@
-"""Market overview endpoints: indices, movers, Fear & Greed."""
+"""Market overview endpoints: indices, movers, Fear & Greed, search."""
 
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from data.fetcher import DataFetcher
+from data.universe import search_universe
 from engines.macro import MacroEngine, compute_fear_greed
 import config
 
@@ -31,6 +32,34 @@ def get_market_movers():
     gainers = sorted_all[-5:][::-1]
 
     return {"gainers": gainers, "losers": losers}
+
+
+@router.get("/search")
+def search(q: str = Query("", min_length=1, max_length=50)):
+    """
+    Search stocks and ETFs by ticker or company/fund name.
+    Returns up to 12 results ranked: exact ticker → ticker prefix → name match.
+    """
+    q = q.strip()
+    if not q:
+        return {"results": []}
+
+    hits = search_universe(q, limit=12)
+    return {
+        "results": [
+            {
+                "ticker":   h["ticker"],
+                "name":     h.get("name", h["ticker"]),
+                "sector":   h.get("sector", ""),
+                "exchange": h.get("exchange", ""),
+                "country":  h.get("country", "US"),
+                "type":     h.get("type", "Stock"),
+            }
+            for h in hits
+        ],
+        "query": q,
+        "total": len(hits),
+    }
 
 
 @router.get("/fear-greed")
